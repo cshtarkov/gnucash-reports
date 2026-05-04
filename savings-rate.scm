@@ -40,12 +40,12 @@
 (define optname-start-date (N_ "Start Date"))
 (define optname-end-date (N_ "End Date"))
 
-(define optname-accounts (N_ "Accounts"))
+(define optname-accounts (N_ "Income and Expense Accounts"))
 (define opthelp-accounts
-  (N_ "Report on these accounts."))
+  (N_ "Report on these income and expense accounts."))
 (define optname-tax-accounts (N_ "Tax Accounts"))
 (define opthelp-tax-accounts
-  (N_ "Accounts considered tax accounts, must be a subset of the overall set of accounts."))
+  (N_ "Report on these tax accounts. Should not overlap with the expense accounts."))
 
 (define pagename-commodities (N_ "Commodities"))
 (define optname-report-commodity (N_ "Report's currency"))
@@ -229,9 +229,6 @@
                  (gnc:account-get-trans-type-balance-interval-with-closing
                   tax-accounts closing-pattern start-date end-date)))
 
-               (expense-total-net-of-tax
-                (gnc:collector- expense-total tax-total))
-
                (revenue-total
                 (gnc:collector-
                  (gnc:account-get-trans-type-balance-interval-with-closing
@@ -250,7 +247,7 @@
                 (gnc:collector- revenue-and-trading-total tax-total))
 
                (net-income
-                (gnc:collector- revenue-and-trading-total expense-total))
+                (gnc:collector- revenue-and-trading-total tax-total expense-total))
 
                (savings-rate
                 (calculate-savings-rate-percentage
@@ -311,7 +308,7 @@
             (add-report-line-amount
              gross-table
              (G_ "Expenses")
-             expense-total-net-of-tax)
+             expense-total)
             (add-rule gross-table)
             (add-report-line-amount
              gross-table
@@ -333,7 +330,7 @@
             (add-report-line-amount
              net-table
              (G_ "Expenses")
-             expense-total-net-of-tax)
+             expense-total)
             (add-rule net-table)
             (add-report-line-amount
              net-table
